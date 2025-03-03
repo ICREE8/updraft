@@ -5,8 +5,8 @@ pragma solidity ^0.8.19;
 import {DeployRaffle} from "../../script/DeployRaffle.s.sol";
 import {Raffle} from "../../src/Raffle.sol";
 import {HelperConfig} from "../../script/HelperConfig.s.sol";
-import {Test, console2} from "forge-std/Test.sol";
-import {Vm} from "forge-std/Vm.sol";
+import {Test, console2} from "lib/forge-std/src/Test.sol";
+import {Vm} from "lib/forge-std/src/Vm.sol";
 import {VRFCoordinatorV2_5Mock} from "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 import {LinkToken} from "../../test/mocks/LinkToken.sol";
 import {CodeConstants} from "../../script/HelperConfig.s.sol";
@@ -214,6 +214,14 @@ contract RaffleTest is Test, CodeConstants {
     /*//////////////////////////////////////////////////////////////
                            FULFILLRANDOMWORDS
     //////////////////////////////////////////////////////////////*/
+    modifier skipFork() {
+        if(block.chainid != LOCAL_CHAIN_ID){
+            return;
+        }
+        _;
+    }
+
+
     modifier raffleEntered() {
         vm.prank(PLAYER);
         raffle.enterRaffle{value: raffleEntranceFee}();
@@ -222,14 +230,9 @@ contract RaffleTest is Test, CodeConstants {
         _;
     }
 
-    modifier skipFork() {
-        if (block.chainid != 31337) {
-            return;
-        }
-        _;
-    }
 
-    function testFulfillRandomWordsCanOnlyBeCalledAfterPerformUpkeep() public raffleEntered skipFork {
+    function testFulfillRandomWordsCanOnlyBeCalledAfterPerformUpkeep(uint256 randomRequestId) 
+    public raffleEntered skipFork {
         // Arrange
         // Act / Assert
         vm.expectRevert(VRFCoordinatorV2_5Mock.InvalidRequest.selector);

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 import {LinkToken} from "../test/mocks/LinkToken.sol";
-import {Script, console2} from "forge-std/Script.sol";
+import {Script, console2} from "lib/forge-std/src/Script.sol";
 import {VRFCoordinatorV2_5Mock} from "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 
 abstract contract CodeConstants {
@@ -87,7 +87,7 @@ contract HelperConfig is CodeConstants, Script {
 
     function getSepoliaEthConfig() public pure returns (NetworkConfig memory sepoliaNetworkConfig) {
         sepoliaNetworkConfig = NetworkConfig({
-            subscriptionId: 0, // If left as 0, our scripts will create one!
+            subscriptionId: 86024293418721161571948529254457422506479389582238685990886890570052504574662, // If left as 0, our scripts will create one!
             gasLane: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
             automationUpdateInterval: 30, // 30 seconds
             raffleEntranceFee: 0.01 ether,
@@ -121,7 +121,7 @@ contract HelperConfig is CodeConstants, Script {
             callbackGasLimit: 500000, // 500,000 gas
             vrfCoordinatorV2_5: address(vrfCoordinatorV2_5Mock),
             link: address(link),
-            account: FOUNDRY_DEFAULT_SENDER
+            account: 0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38
         });
         vm.deal(localNetworkConfig.account, 100 ether);
         return localNetworkConfig;
